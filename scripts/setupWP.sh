@@ -7,7 +7,7 @@ edgeportCDN=false;
 wpmu=false;
 DOMAIN=false;
 
-SERVER_WEBROOT=/var/www/webroot/ROOT
+SERVER_WEBROOT=/var/www/webroot/ROOT/current/public
 
 ARGUMENT_LIST=(
     "purge"
@@ -189,7 +189,7 @@ if [ $objectcache == 'true' ] ; then
 fi
 
 if [ $edgeportCDN == 'true' ] ; then
-  if ! $(${WP} core is-installed --network --path=${SERVER_WEBROOT}); then 
+  if ! $(${WP} core is-installed --network --path=${SERVER_WEBROOT}); then
     case $WPCACHE in
       w3tc)
           checkCdnStatus;
@@ -227,7 +227,7 @@ if [ $wpmu == 'true' ] ; then
 fi
 
 if [ $DOMAIN != 'false' ] ; then
-  if ! $(${WP} core is-installed --network --path=${SERVER_WEBROOT}); then 
+  if ! $(${WP} core is-installed --network --path=${SERVER_WEBROOT}); then
 	OLD_DOMAIN=$(${WP} option get siteurl --path=${SERVER_WEBROOT})
 	OLD_SHORT_DOMAIN=$(${WP} option get siteurl --path=${SERVER_WEBROOT} | cut -d'/' -f3)
 	NEW_SHORT_DOMAIN=$(echo $DOMAIN | cut -d'/' -f3)

@@ -10,7 +10,7 @@ description:
   short: WordPress Cluster with built-in kit v2 for choosing optimal servers, database clustering type, scaling mode and a set of advanced features for highly-loaded projects
 logo: /images/wp-cluster-kit.svg
 
-baseUrl: https://raw.githubusercontent.com/jelastic-jps/wordpress-cluster/v2.2.0
+baseUrl: https://github.com/benoitchantre/wordpress-cluster/v2.2.0
 
 onBeforeInit: /scripts/beforeInit.js?_r=${fn.random}
 onBeforeInstall: /scripts/beforeInstall.js?_r=${fn.random}
@@ -116,7 +116,7 @@ settings:
       value: false
       disabled: false
       tooltip: "Multisite is a type of WordPress installation that allows you to create and manage a network of multiple websites from a single WordPress dashboard. This lets you easily make changes and keep all of your websites updated from one place."
-      
+
     - caption: Install WooCommerce
       type: checkbox
       name: woocommerce
@@ -158,7 +158,7 @@ onInstall:
   - if (/litespeed/.test("${nodes.cp.nodeType}")): setPassword
   - getRedisPswd
   - installWordpress
-  - if ('${settings.mu-addon:false}' == 'true'): configureMultisite  
+  - if ('${settings.mu-addon:false}' == 'true'): configureMultisite
   - if (${settings.woocommerce:false}): installWoocommerce
   - if (('${settings.le-addon:false}' == 'true') || ('${settings.cdn-addon:false}' == 'true')):
     - script: |
@@ -187,7 +187,7 @@ onInstall:
 
   - if ('${settings.le-addon:false}' == 'true'): setupLEdomain
   - if ('${settings.cdn-addon:false}' == 'true'): setupCDN
-  - install: 
+  - install:
     - jps: /scripts/cacheClean.jps?_r=${fn.random}
     - jps: /scripts/addons.jps?_r=${fn.random}
     - jps: /scripts/events.jps?_r=${fn.random}
@@ -221,7 +221,7 @@ actions:
       domains: ${env.domain}
     - setGlobals:
         DOMAIN: ${response.domains}
-        
+
   setTriggers:
     - log: Auto Scaling Triggers
     - script: /scripts/addTriggers.js
@@ -243,7 +243,7 @@ actions:
     - cmd[cp, bl]: |-
         [ ! -d /var/lib/jelastic/keys/letsencrypt ] && mkdir -p /var/lib/jelastic/keys/letsencrypt;
         echo "webroot=false" > /var/lib/jelastic/keys/letsencrypt/settings-custom;
-        echo "webrootPath=/var/www/webroot/ROOT" >> /var/lib/jelastic/keys/letsencrypt/settings-custom;
+        echo "webrootPath=/var/www/webroot/ROOT/current/public" >> /var/lib/jelastic/keys/letsencrypt/settings-custom;
         echo "test=false" >> /var/lib/jelastic/keys/letsencrypt/settings-custom;
         echo "withExtIp=${globals.isExtIP}" >> /var/lib/jelastic/keys/letsencrypt/settings-custom;
       user: root
@@ -266,7 +266,7 @@ actions:
           targetNodes: cp
           optimization: wordpress
     - cmd[cp, bl]: if test -f /usr/local/sbin/optimization.sh; then bash /usr/local/sbin/optimization.sh &>> /var/log/run.log; fi
-  
+
   setPassword:
     - cmd[cp, bl]: jem passwd set -p ${globals.LS_ADMIN_PASS}
       user: root
@@ -279,13 +279,13 @@ actions:
           nodeGroup: cp
           sourceNodeId: ${nodes.storage.master.id}
           sourcePath: /data
-          path: /var/www/webroot/ROOT
+          path: /var/www/webroot/ROOT/current/public
           sourceAddressType: NODE_GROUP
           protocol: ${this}
-          
+
   storageHealthCheck:
     - cmd[cp]: |-
-        echo "<?php http_response_code(500); ?>" > /var/www/webroot/ROOT/index.php
+        echo "<?php http_response_code(500); ?>" > /var/www/webroot/ROOT/current/public/index.php
 
   setupCDN:
     - script: return jelastic.dev.scripting.Eval("c05ffa5b45628a2a0c95467ebca8a0b4", session, "cdn.info", {partnerCode:1})
@@ -321,14 +321,14 @@ actions:
   setupCacheSync:
     - if (/litespeed/.test("${nodes.bl.nodeType}")):
       - install: /scripts/setupHA4LB.jps?_r=${fn.random}
-  
+
   updateTriggers:
     if (!${event.params.auto:true}):
       - log: update scaling trigger
       - script: /scripts/updateTriggers.js
         count: ${nodes.cp.length}
-          
+
   installWoocommerce:
     cmd[${nodes.cp.master.id}]: |-
       wp plugin install woocommerce --version=${globals.version_woocommerce} --activate --path=${SERVER_WEBROOT} &>> /var/log/run.log;
-  
+

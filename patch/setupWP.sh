@@ -1,8 +1,8 @@
 jpsType: update
 name: WP script deploy
-baseUrl: https://raw.githubusercontent.com/jelastic-jps/wordpress-cluster/v2.0.0/scripts
+baseUrl: https://github.com/benoitchantre/wordpress-cluster/v2.0.0/scripts
 onInstall:
-    - cmd[${nodes.cp.master.id}]: |- 
+    - cmd[${nodes.cp.master.id}]: |-
         [ ! -d $HOME/bin ] && mkdir $HOME/bin
         curl -o $HOME/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x $HOME/bin/wp
         echo "export PATH=$PATH:$HOME/bin/" >> $HOME/.bash_profile

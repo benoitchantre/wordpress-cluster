@@ -4,7 +4,7 @@ import com.hivext.api.core.utils.Transport;
 
 var cdnAppid = "c05ffa5b45628a2a0c95467ebca8a0b4";
 var lsAppid = "9e6afcf310004ac84060f90ff41atest";
-var baseUrl = "https://raw.githubusercontent.com/jelastic-jps/wordpress-cluster/master";
+var baseUrl = "https://github.com/benoitchantre/wordpress-cluster/master";
 var cdnText = "Install Lightning-Fast Premium CDN",
     sslText = "Install Let's Encrypt SSL with Auto-Renewal";
     lsText = "Install LiteSpeed High-Performance Web Server";
@@ -17,9 +17,9 @@ var isLS = jelastic.dev.apps.GetApp(lsAppid);
 
 var sameNodes = "environment.maxsamenodescount";
 var maxNodes = "environment.maxnodescount";
-var minEnvNodes = 7, minEnvLayerNodes = 3, quotaName, quotaValue,  quotaText = "", 
+var minEnvNodes = 7, minEnvLayerNodes = 3, quotaName, quotaValue,  quotaText = "",
     quota = jelastic.billing.account.GetQuotas(maxNodes + ";" + sameNodes).array || [];
-    
+
 for (var i = 0, n = quota.length; i < n; i++) {
     quotaName = quota[i].quota.name;
     quotaValue = quota[i].value;
@@ -39,7 +39,7 @@ var url = baseUrl + "/configs/settings.yaml";
 var settings = toNative(new Yaml().load(new Transport().get(url)));
 var fields = settings.fields;
 if (group.groupType == 'trial') {
-    
+
     fields.push({
       "type": "displayfield",
       "cls": "warning",
@@ -47,7 +47,7 @@ if (group.groupType == 'trial') {
       "hideLabel": true,
       "markup": "Not available for " + group.groupType + " account. Please upgrade your account."
     })
- 
+
     if (isLS.result == 0 || isLS.result == Response.PERMISSION_DENIED) {
         settings.fields.push({
             "type": "compositefield",
@@ -91,7 +91,7 @@ if (group.groupType == 'trial') {
             "value": dbText
         }]
     });
- 
+
     if (isCDN.result == 0 || isCDN.result == Response.PERMISSION_DENIED) {
         settings.fields.push({
             "type": "compositefield",
@@ -114,7 +114,7 @@ if (group.groupType == 'trial') {
             }]
         });
     }
-    
+
     settings.fields.push({
         "type": "compositefield",
         "hideLabel": true,
@@ -175,14 +175,14 @@ if (group.groupType == 'trial') {
                         "margins": "0 0 0 -3",
                         "width": 16,
                         "height": 20
-                        
+
                     }, {
                         "type": "displayfield",
                         "cls": "x-item-disabled",
                         "value": wafText,
                         "margins": "0 0 0 12"
                     }]
-                }   
+                }
              }
         });
     }
@@ -194,7 +194,7 @@ if (group.groupType == 'trial') {
         value: true,
         tooltip: "<h3>Requirements for All Tables:</h3> * run on InnoDB storage engine <p>* have a primary key</p>Read more about <a href='https://mariadb.com/kb/en/library/mariadb-galera-cluster-known-limitations/'>limitations</a>"
     });
-   
+
     if (isCDN.result == 0 || isCDN.result == Response.PERMISSION_DENIED) {
         settings.fields.push({
             type: "checkbox",

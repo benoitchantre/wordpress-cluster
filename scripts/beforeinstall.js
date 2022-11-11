@@ -77,18 +77,18 @@ if (${settings.ls-addon:false}) {
     scalingMode: "STATELESS",
     displayName: "AppServer",
     env: {
-      SERVER_WEBROOT: "/var/www/webroot/ROOT",
+      SERVER_WEBROOT: "/var/www/webroot/ROOT/current/public",
       REDIS_ENABLED: "true",
       WAF: "${settings.waf:false}",
       WP_PROTECT: "OFF"
     },
     volumes: [
-      "/var/www/webroot/ROOT"
+      "/var/www/webroot/ROOT/current/public"
     ],  
     volumeMounts: {
-      "/var/www/webroot/ROOT": {
+      "/var/www/webroot/ROOT/current/public": {
         readOnly: "false",
-        sourcePath: "/data/ROOT",
+        sourcePath: "/data/ROOT/current/public",
         sourceNodeGroup: "storage"
       }
     }
@@ -117,18 +117,18 @@ if (!${settings.ls-addon:false}) {
     scalingMode: "STATELESS",
     displayName: "AppServer",
     env: {
-      SERVER_WEBROOT: "/var/www/webroot/ROOT",
+      SERVER_WEBROOT: "/var/www/webroot/ROOT/current/public",
       REDIS_ENABLED: "true"
     },
     volumes: [
-      "/var/www/webroot/ROOT",
+      "/var/www/webroot/ROOT/current/public",
       "/var/www/webroot/.cache",
       "/etc/nginx/conf.d/SITES_ENABLED"
     ],  
     volumeMounts: {
-      "/var/www/webroot/ROOT": {
+      "/var/www/webroot/ROOT/current/public": {
         readOnly: "false",
-        sourcePath: "/data/ROOT",
+        sourcePath: "/data/ROOT/current/public",
         sourceNodeGroup: "storage"
       },
       "/var/www/webroot/.cache": {
